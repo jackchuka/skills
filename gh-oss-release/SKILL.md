@@ -73,7 +73,9 @@ Run `gh oss-watch releases` again to confirm all repos show "up to date".
 
 ### Step 7: Update Homebrew Tap
 
-After all releases are verified, update the homebrew-tap formulae:
+Ask the user if they want to update the homebrew tap before proceeding. If they decline, stop here.
+
+After confirmation, update the homebrew-tap formulae:
 
 ```bash
 cd ~/ghq/github.com/jackchuka/homebrew-tap
