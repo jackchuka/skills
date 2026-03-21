@@ -1,6 +1,7 @@
 ---
 name: gws-meeting-scheduler
 description: Schedule meetings between people using the `gws` CLI (Google Calendar). Use when the user wants to find a meeting time, schedule a meeting, check availability, or book time with someone. Triggers on requests like "schedule a meeting with X", "find time with Y", "book a 1:1", "when can I meet with Z", "set up a sync".
+argument-hint: "<attendees> [<date/time preference>]"
 compatibility: Requires gws CLI
 metadata:
   author: jackchuka

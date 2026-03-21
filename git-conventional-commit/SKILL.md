@@ -1,6 +1,7 @@
 ---
 name: git-conventional-commit
 description: Create git commits following the Conventional Commits v1.0.0 specification (conventionalcommits.org). Use when the user asks to commit changes, says "/conventional-commit", or wants a well-structured commit message. Triggers on requests like "commit this", "commit my changes", "create a commit", or any git commit workflow. Analyzes staged/unstaged changes and produces compliant commit messages with proper type, scope, description, body, and footers.
+argument-hint: "[--scope <scope>]"
 compatibility: Requires git
 metadata:
   author: jackchuka
