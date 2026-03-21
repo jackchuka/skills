@@ -11,6 +11,7 @@ description: >
   adding new MCP servers or tools and wanting to decide what to pre-allow.
   Triggers: "review permissions", "audit settings", "clean up settings.json",
   "permissions audit", "/permissions-audit".
+argument-hint: "[--fix]"
 compatibility: Designed for Claude Code
 metadata:
   author: jackchuka

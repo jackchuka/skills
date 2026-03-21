@@ -5,6 +5,7 @@ description: >
   analyzes unreleased commits to recommend semver bumps, confirms with user, then creates releases.
   Triggers: "create releases", "release my packages", "check for releases", "oss releases",
   "gh oss-watch releases", "/oss-release", "release status", "bump versions"
+argument-hint: "[<repo> ...] [--dry-run]"
 compatibility: Requires gh CLI and gh oss-watch extension
 metadata:
   author: jackchuka

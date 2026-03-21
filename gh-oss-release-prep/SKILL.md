@@ -5,6 +5,7 @@ description: >
   making a project public, or ensuring a repo meets OSS standards.
   Triggers: "prepare for OSS", "ready to publish", "make this public", "OSS checklist",
   "scan repo for publish", "open source this", "/oss-release-prep"
+argument-hint: "[<repo>]"
 compatibility: Requires git and language-specific linters
 metadata:
   author: jackchuka

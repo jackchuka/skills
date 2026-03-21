@@ -4,6 +4,7 @@ description: >
   Bump Go version across multiple OSS repositories. Use when the user wants to update Go across repos,
   says "bump go version", "update go", "go version bump", "upgrade go", or mentions updating Go in their
   projects. Also triggers on "go 1.x", "latest go", "go security update", "/go-bump".
+argument-hint: "[<go-version>]"
 compatibility: Requires gh CLI, gh oss-watch extension, and Go toolchain installed locally
 metadata:
   author: jackchuka

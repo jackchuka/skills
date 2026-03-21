@@ -1,6 +1,7 @@
 ---
 name: gh-dep-pr-triage
 description: Triage and fix dependency update PRs (Renovate, Dependabot, etc.). Use when the user wants to review dependency PRs, check which are mergeable, fix failing CI on dependency updates, or clean up a backlog of automated dependency PRs. Also triggers when the user mentions "renovate PRs", "dependabot PRs", "dependency updates", "dep PRs".
+argument-hint: "[<owner/repo>] [--merge]"
 compatibility: Requires gh CLI, git, and access to the internet
 metadata:
   author: jackchuka

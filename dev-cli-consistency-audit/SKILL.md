@@ -5,6 +5,7 @@ description: >
   help text, and README alignment. Use when building CLI tools or before releasing CLI updates.
   Triggers: "review CLI arguments", "align CLI conventions", "CLI consistency check",
   "make sure commands are aligned", "review command interface".
+argument-hint: "[<command-name>]"
 compatibility: NA
 metadata:
   author: jackchuka
