@@ -76,20 +76,10 @@ Run `gh oss-watch releases` again to confirm all repos show "up to date".
 
 Ask the user if they want to update the homebrew tap before proceeding. If they decline, stop here.
 
-After confirmation, update the homebrew-tap formulae:
+After confirmation, trigger the scheduled workflow which handles formula updates automatically:
 
 ```bash
-cd ~/ghq/github.com/jackchuka/homebrew-tap
-git pull origin main
-make update
-```
-
-Then commit with a message listing the updated versions (e.g., `update: gql-ingest v3.1.6, slackcli v0.3.0`) and push:
-
-```bash
-git add -A
-git commit -m "<version summary>"
-git push origin main
+gh workflow run scheduled.yml --repo jackchuka/homebrew-tap
 ```
 
 ## Important Notes
