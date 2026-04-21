@@ -1,0 +1,36 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Ensure gh >= 2.90.0
+        run: |
+          set -e
+          current=$(gh --version | head -1 | awk '{print $3}')
+          need="2.90.0"
+          if [ "$(printf '%s\n%s\n' "$need" "$current" | sort -V | head -1)" != "$need" ]; then
+            echo "gh $current < $need, upgrading..."
+            type -p curl >/dev/null || sudo apt-get install -y curl
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+            sudo apt-get update
+            sudo apt-get install -y gh
+          fi
+          gh --version
+
+      - name: gh skill publish --dry-run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh skill publish --dry-run
