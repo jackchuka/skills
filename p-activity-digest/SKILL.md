@@ -1,5 +1,6 @@
 ---
 name: p-activity-digest
+license: MIT
 description: Summarize recent communication activity from Slack and meeting recordings. Use when the user wants to know what happened on Slack, review meeting action items, find mentions, or get a communication summary. Triggers on "summarize Slack", "meeting action items", "what was discussed", "activity summary", "search my mentions", "highlight of the day", "/activity-digest".
 argument-hint: "[time range] [--sources slack|fireflies|all]"
 compatibility: Requires Slack MCP server. Fireflies MCP server optional.

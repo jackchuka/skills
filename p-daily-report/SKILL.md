@@ -1,10 +1,8 @@
 ---
 name: p-daily-report
+license: MIT
 description: Use when reviewing what you worked on, creating standups, writing status updates, tracking daily/weekly progress, or asking "what did I do today"
-allowed-tools:
-  - Read
-  - Bash
-  - Write
+allowed-tools: Read Bash Write
 argument-hint: "[--days N] [--yesterday] [--project NAME] [--summary]"
 compatibility: Requires gh CLI, gws CLI, and Slack MCP server
 metadata:

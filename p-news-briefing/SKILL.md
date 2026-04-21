@@ -1,11 +1,8 @@
 ---
 name: p-news-briefing
+license: MIT
 description: Use when the user asks for news, wants a briefing, says "/news-briefing", or asks to aggregate recent information on any topic. Triggers on requests like "what's happening with AI", "get me news on crypto", "news briefing on climate".
-allowed-tools:
-  - WebSearch
-  - Task
-  - mkdir
-  - Write
+allowed-tools: WebSearch Task Bash Write
 argument-hint: "<topics> [--depth quick|deep]"
 compatibility: Requires access to the internet
 metadata:

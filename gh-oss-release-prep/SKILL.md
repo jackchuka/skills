@@ -1,5 +1,6 @@
 ---
 name: gh-oss-release-prep
+license: MIT
 description: >
   Systematic OSS release preparation checklist. Use when preparing a repository for open-source publishing,
   making a project public, or ensuring a repo meets OSS standards.

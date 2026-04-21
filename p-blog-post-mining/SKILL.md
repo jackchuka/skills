@@ -1,5 +1,6 @@
 ---
 name: p-blog-post-mining
+license: MIT
 description: >
   Mine development activities for blog-worthy topics and create outlines.
   Analyzes Claude session history, GitHub commits/PRs, Slack discussions,

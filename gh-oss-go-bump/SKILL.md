@@ -1,5 +1,6 @@
 ---
 name: gh-oss-go-bump
+license: MIT
 description: >
   Bump Go version across multiple OSS repositories. Use when the user wants to update Go across repos,
   says "bump go version", "update go", "go version bump", "upgrade go", or mentions updating Go in their

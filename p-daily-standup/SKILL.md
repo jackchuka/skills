@@ -1,5 +1,6 @@
 ---
 name: p-daily-standup
+license: MIT
 description: Aggregate previous business day activity and post standup update to Slack. Use when the user says "standup", "daily standup", "post status", "status update", or "/daily-standup".
 argument-hint: "[--lang ja|en] [--dry-run]"
 compatibility: Requires gh CLI, gws CLI, and Slack MCP server. Fireflies MCP server optional.
