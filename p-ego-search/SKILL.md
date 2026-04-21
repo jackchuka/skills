@@ -1,5 +1,6 @@
 ---
 name: p-ego-search
+license: MIT
 description: >
   Search for mentions of you across Slack, Fireflies, and GitHub.
   Triggers on "egosearch", "/egosearch", "search for mentions of me", "who's talking about me".

@@ -1,9 +1,9 @@
 ---
 name: restaurant-search
+license: MIT
 description: Search for Japanese restaurants using the `hpp` CLI (HotPepper Gourmet API). Use when the user wants to find a restaurant, plan a dinner, search for izakayas, or book a group meal in Japan. Triggers on requests like "find a restaurant near Shibuya", "search for izakayas in 新宿", "restaurant for 10 people in 浜松町", "dinner spot near Tokyo station".
 argument-hint: "<area> [--people N] [--budget <range>] [--genre <cuisine>]"
-allowed-tools:
-  - Bash
+allowed-tools: Bash
 compatibility: Requires hpp CLI and HOTPEPPER_API_KEY environment variable
 metadata:
   author: jackchuka

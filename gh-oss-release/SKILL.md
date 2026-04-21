@@ -1,5 +1,6 @@
 ---
 name: gh-oss-release
+license: MIT
 description: >
   Create GitHub releases across multiple OSS repositories. Checks release status via `gh oss-watch releases`,
   analyzes unreleased commits to recommend semver bumps, confirms with user, then creates releases.

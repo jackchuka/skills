@@ -1,5 +1,6 @@
 ---
 name: p-blog-writer
+license: MIT
 description: >
   Write blog posts in {user_name}'s voice with theoretical depth and persuasive arguments.
   Iterative workflow: intake → outline → section-by-section expansion → polish.

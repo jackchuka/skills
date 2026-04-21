@@ -1,5 +1,6 @@
 ---
 name: gh-issue-report
+license: MIT
 description: >
   Investigate and file bug reports on GitHub repositories. Searches existing issues to avoid duplicates,
   checks contributing guides and issue templates, optionally confirms the bug in source code, and files

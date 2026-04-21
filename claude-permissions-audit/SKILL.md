@@ -1,5 +1,6 @@
 ---
 name: claude-permissions-audit
+license: MIT
 description: >
   Review and reorganize Claude Code permission settings across all config files
   (global settings.json, project settings.local.json, dotfiles copies). Identifies

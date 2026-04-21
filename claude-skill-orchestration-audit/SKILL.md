@@ -1,5 +1,6 @@
 ---
 name: claude-skill-orchestration-audit
+license: MIT
 description: >
   Audit skills for agentic orchestration quality. Checks subagent dispatch patterns,
   parallelism opportunities, anti-patterns, and alignment with the three-phase pattern

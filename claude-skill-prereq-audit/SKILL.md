@@ -1,5 +1,6 @@
 ---
 name: claude-skill-prereq-audit
+license: MIT
 description: >
   Scan skills for prerequisite tools, MCP servers, and auth requirements,
   then check if everything is installed and authenticated. Offers to fix issues.

@@ -1,5 +1,6 @@
 ---
 name: claude-skill-spec-audit
+license: MIT
 description: >
   Audit skill SKILL.md files for compliance with the agentskills.io specification.
   Checks frontmatter fields (name, description, compatibility, metadata, argument-hint)

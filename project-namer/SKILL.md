@@ -1,5 +1,6 @@
 ---
 name: project-namer
+license: MIT
 description: Use when naming a project, repository, tool, or product and wanting a memorable, unique name
 argument-hint: "<project description or domain>"
 compatibility: NA

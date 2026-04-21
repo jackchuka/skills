@@ -1,5 +1,6 @@
 ---
 name: dev-cli-consistency-audit
+license: MIT
 description: >
   Reviews a CLI tool's command interface for consistency in argument naming, flag conventions,
   help text, and README alignment. Use when building CLI tools or before releasing CLI updates.

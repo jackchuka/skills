@@ -1,5 +1,6 @@
 ---
 name: p-slack-triage
+license: MIT
 description: >
   Scan Slack for messages needing your attention, walk through them one-by-one,
   and draft/send replies. Covers DMs, mentions, threads, and channel activity.

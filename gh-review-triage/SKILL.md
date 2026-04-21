@@ -1,5 +1,6 @@
 ---
 name: gh-review-triage
+license: MIT
 description: >
   Triage PR reviews assigned to you and your teams. Produces a single
   prioritized table using a decision-tree + LLM hybrid approach.

@@ -1,5 +1,6 @@
 ---
 name: p-daily-reflection
+license: MIT
 description: >
   Reflect on past work and iterate to improve. Analyzes Claude sessions, GitHub,
   Slack, and Fireflies to generate a journal entry with actionable improvements.

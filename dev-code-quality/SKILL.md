@@ -1,5 +1,6 @@
 ---
 name: dev-code-quality
+license: MIT
 description: >
   Systematic codebase quality scan for identifying duplication, redundancy, and improvement opportunities.
   Use when reviewing a repo's architecture, finding refactoring targets, or assessing code health.
