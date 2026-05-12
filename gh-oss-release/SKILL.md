@@ -73,7 +73,25 @@ gh release create <new-tag> --repo <owner>/<repo> --generate-notes
 
 Run `gh oss-watch releases` again to confirm all repos show "up to date".
 
-### Step 7: Update Homebrew Tap
+### Step 7: Wait for Release Builds
+
+Before updating the homebrew tap, all tag-triggered CI builds must complete successfully so release artifacts exist for formula updates.
+
+Check the most recent run for each released repo in parallel:
+
+```bash
+gh run list --repo <owner>/<repo> --limit 3
+```
+
+If any run is still `in_progress` or `queued`, wait for it to complete:
+
+```bash
+gh run watch <run-id> --repo <owner>/<repo> --exit-status
+```
+
+If any build fails, stop and surface the failure to the user — do not proceed to the tap update.
+
+### Step 8: Update Homebrew Tap
 
 Ask the user if they want to update the homebrew tap before proceeding. If they decline, stop here.
 
