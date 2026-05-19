@@ -1,0 +1,28 @@
+{
+  "org": "acme",
+  "collected_at": "NORMALIZED",
+  "teams": [
+    {
+      "slug": "platform", "name": "Platform", "description": "infra & CI", "parent": null,
+      "members": ["alice", "bob"],
+      "repos": [
+        {"name": "acme/infra-tf",   "permission": "admin"},
+        {"name": "acme/ci-runners", "permission": "admin"},
+        {"name": "acme/api",        "permission": "maintain", "codeowner_paths": ["/services/auth/", "/services/billing/", "*"]}
+      ]
+    },
+    {
+      "slug": "platform-data", "name": "Data Platform", "description": "warehouse & ingestion", "parent": "platform",
+      "members": ["carol"],
+      "repos": [{"name": "acme/dbt", "permission": "admin"}]
+    },
+    {
+      "slug": "product", "name": "Product", "description": "customer-facing", "parent": null,
+      "members": ["dave", "erin"],
+      "repos": [
+        {"name": "acme/web", "permission": "admin"},
+        {"name": "acme/api", "permission": "push", "codeowner_paths": ["/web/"]}
+      ]
+    }
+  ]
+}

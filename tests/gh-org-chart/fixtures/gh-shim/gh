@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Fake `gh` CLI used by tests. Routes `gh api [--paginate] <PATH>` calls to
+# canned response files under $GH_SHIM_RESPONSES (or ../responses relative to
+# this script). Supports the `-H "Accept: application/vnd.github.v3.raw"` form
+# by mapping to a raw file under responses/codeowners/<repo-slug>.txt.
+
+set -euo pipefail
+
+RESPONSES="${GH_SHIM_RESPONSES:-$(cd "$(dirname "$0")/../responses" && pwd)}"
+
+# Only the `api` subcommand is implemented.
+[[ "${1:-}" != "api" ]] && { echo "gh-shim: only 'gh api' is supported" >&2; exit 2; }
+shift
+
+RAW=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --paginate) shift;;
+    --jq) shift 2;;
+    -H)
+      [[ "$2" == *vnd.github.v3.raw* ]] && RAW=1
+      shift 2;;
+    --) shift; break;;
+    -*) shift;;
+    *) break;;
+  esac
+done
+
+URL="$1"
+
+if [[ "$RAW" == "1" ]]; then
+  # /repos/OWNER/REPO/contents/PATH -> codeowners/OWNER__REPO__PATH.txt
+  rel="${URL#/repos/}"
+  owner_repo="${rel%%/contents/*}"
+  path="${rel#*/contents/}"
+  key="${owner_repo//\//__}__${path//\//__}"
+  file="$RESPONSES/codeowners/$key.txt"
+  if [[ -f "$file" ]]; then cat "$file"; exit 0; fi
+  echo "gh-shim: 404 $URL" >&2; exit 1
+fi
+
+# Normal JSON: URL "/orgs/acme/teams" -> orgs__acme__teams.json
+key="${URL#/}"
+key="${key//\//__}"
+file="$RESPONSES/$key.json"
+if [[ -f "$file" ]]; then cat "$file"; exit 0; fi
+echo "gh-shim: missing fixture $file (URL $URL)" >&2; exit 1
