@@ -1,0 +1,5 @@
+[
+  {"full_name": "acme/infra-tf",   "permissions": {"admin": true,  "maintain": true,  "push": true, "triage": true, "pull": true}},
+  {"full_name": "acme/ci-runners", "permissions": {"admin": true,  "maintain": true,  "push": true, "triage": true, "pull": true}},
+  {"full_name": "acme/api",        "permissions": {"admin": false, "maintain": true,  "push": true, "triage": true, "pull": true}}
+]

@@ -1,0 +1,4 @@
+[
+  {"full_name": "acme/web", "permissions": {"admin": true,  "maintain": true,  "push": true, "triage": true, "pull": true}},
+  {"full_name": "acme/api", "permissions": {"admin": false, "maintain": false, "push": true, "triage": true, "pull": true}}
+]

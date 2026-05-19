@@ -1,0 +1,5 @@
+# CODEOWNERS for acme/api
+/services/auth/     @acme/platform
+/services/billing/  @acme/platform
+/web/               @acme/product
+*                   @acme/platform @other-org/team-x
