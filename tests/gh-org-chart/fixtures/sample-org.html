@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>acme — org chart</title>
+  <style>
+:root {
+  --bg: #f5f5f7; --panel: #ffffff; --border: #d1d1d6;
+  --text: #1d1d1f; --muted: #86868b; --accent: #0071e3;
+  --selected-bg: #e8f4fd; --pill-bg: transparent;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1d1d1f; --panel: #2d2d2f; --border: #424245;
+    --text: #f5f5f7; --muted: #86868b; --accent: #0a84ff;
+    --selected-bg: rgba(10,132,255,0.15);
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, system-ui, sans-serif;
+  background: var(--bg); color: var(--text); }
+header { padding: 12px 20px; border-bottom: 1px solid var(--border);
+  background: var(--panel); display: flex; gap: 12px; align-items: baseline; }
+header h1 { margin: 0; font-size: 16px; }
+header .ts { color: var(--muted); font-size: 12px; }
+main { display: grid; grid-template-columns: 30% 70%; min-height: calc(100vh - 50px); }
+@media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+#tree, #detail { padding: 12px; overflow: auto; }
+#tree { border-right: 1px solid var(--border); background: var(--panel); }
+#detail .empty { color: var(--muted); }
+
+.tree-row { display: flex; align-items: center; gap: 8px; padding: 6px;
+  border-radius: 6px; cursor: pointer; }
+.tree-row:hover { background: var(--selected-bg); }
+.tree-row.selected { background: var(--selected-bg); border: 1px solid var(--accent); padding: 5px; }
+.tree-row .chev { width: 12px; color: var(--muted); font-size: 10px; }
+.tree-row .icon { font-size: 13px; }
+.tree-row .name { font-weight: 600; }
+.tree-row .desc { color: var(--muted); font-size: 11px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+.tree-row .pill { color: var(--muted); font-size: 11px;
+  padding: 1px 6px; border: 1px solid var(--border); border-radius: 10px; }
+.tree-children { position: relative; padding-left: 18px; margin-top: 2px; }
+.tree-connector { position: absolute; left: 11px; top: 0; bottom: 0;
+  width: 1px; background: var(--border); }
+.tree-children.collapsed { display: none; }
+
+.detail h2 { margin: 0 0 4px; }
+.detail .desc { color: var(--muted); margin-bottom: 16px; }
+.detail .section { margin-bottom: 20px; }
+.detail .label { text-transform: uppercase; font-size: 11px; color: var(--muted);
+  letter-spacing: 0.05em; margin-bottom: 8px; }
+.members { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px; }
+.member { display: flex; align-items: center; gap: 8px; padding: 4px; border-radius: 4px; }
+.member img { width: 32px; height: 32px; border-radius: 50%; background: var(--border); }
+.repo-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.repo-table th, .repo-table td { text-align: left; padding: 6px 8px;
+  border-bottom: 1px solid var(--border); vertical-align: top; }
+.repo-table th { color: var(--muted); font-weight: 500; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.05em; }
+.repo-table a { color: var(--accent); text-decoration: none; }
+.repo-table a:hover { text-decoration: underline; }
+.paths { display: flex; flex-wrap: wrap; gap: 4px; }
+.path { font-family: ui-monospace, monospace; font-size: 11px;
+  padding: 2px 6px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; }
+.subteams a { color: var(--accent); text-decoration: none; margin-right: 12px; }
+
+.filter-bar { position: sticky; top: 0; background: var(--panel);
+  padding: 4px 0 10px; border-bottom: 1px solid var(--border); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px; }
+.filter-bar input { flex: 1; padding: 6px 10px; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--bg); color: var(--text); font-size: 12px; }
+.tree-row.dim { opacity: 0.35; }
+.tree-row.hide { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>acme</h1>
+  <span class="ts">collected 2026-05-15T10:00:00Z</span>
+</header>
+<main>
+  <aside id="tree">
+    <div class="filter-bar">
+      <span aria-hidden="true">&#128269;</span>
+      <input id="filter" type="search" placeholder="Filter teams, repos, people...">
+    </div>
+    <div class="tree-row" data-slug="platform"><span class="chev">&#9662;</span><span class="icon">&#128101;</span><span class="name">Platform</span><span class="desc">infra &amp; CI</span><span class="pill">3 · 2</span></div><div class="tree-children"><div class="tree-connector"></div><div class="tree-row" data-slug="platform-data"><span class="chev">&nbsp;</span><span class="icon">&#128101;</span><span class="name">Data Platform</span><span class="desc">warehouse &amp; ingestion</span><span class="pill">1 · 1</span></div></div><div class="tree-row" data-slug="product"><span class="chev">&nbsp;</span><span class="icon">&#128101;</span><span class="name">Product</span><span class="desc">customer-facing</span><span class="pill">2 · 2</span></div>
+  </aside>
+  <section id="detail"><p class="empty">Pick a team on the left.</p></section>
+</main>
+<script type="application/json" id="data">{"org": "acme", "collected_at": "2026-05-15T10:00:00Z", "teams": [{"slug": "platform", "name": "Platform", "description": "infra & CI", "parent": null, "members": ["alice", "bob"], "repos": [{"name": "acme/infra-tf", "permission": "admin"}, {"name": "acme/ci-runners", "permission": "admin"}, {"name": "acme/api", "permission": "maintain", "codeowner_paths": ["/services/auth/", "/services/billing/", "*"]}]}, {"slug": "platform-data", "name": "Data Platform", "description": "warehouse & ingestion", "parent": "platform", "members": ["carol"], "repos": [{"name": "acme/dbt", "permission": "admin"}]}, {"slug": "product", "name": "Product", "description": "customer-facing", "parent": null, "members": ["dave", "erin"], "repos": [{"name": "acme/web", "permission": "admin"}, {"name": "acme/api", "permission": "push", "codeowner_paths": ["/web/"]}]}]}</script>
+<script>
+(function() {
+  const data = JSON.parse(document.getElementById('data').textContent);
+  const bySlug = Object.fromEntries(data.teams.map(t => [t.slug, t]));
+  const children = {};
+  for (const t of data.teams) {
+    if (t.parent) (children[t.parent] = children[t.parent] || []).push(t);
+  }
+  const detail = document.getElementById('detail');
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  function renderDetail(slug) {
+    const t = bySlug[slug];
+    if (!t) { detail.innerHTML = '<p class="empty">Pick a team on the left.</p>'; return; }
+    const breadcrumb = t.parent && bySlug[t.parent]
+      ? `<div class="desc"><a href="#" data-go="${esc(t.parent)}">&larr; ${esc(bySlug[t.parent].name)}</a></div>`
+      : '';
+    const members = (t.members || []).map(m =>
+      `<div class="member"><img loading="lazy" src="https://github.com/${esc(m)}.png?size=40" alt=""><span>${esc(m)}</span></div>`
+    ).join('');
+    const rows = (t.repos || []).map(r => {
+      const paths = (r.codeowner_paths || []).map(p => `<span class="path">${esc(p)}</span>`).join('');
+      return `<tr>
+        <td><a href="https://github.com/${esc(r.name)}" target="_blank" rel="noopener">${esc(r.name)}</a></td>
+        <td>${esc(r.permission)}</td>
+        <td><div class="paths">${paths}</div></td>
+      </tr>`;
+    }).join('');
+    const subteams = (children[t.slug] || []).map(c =>
+      `<a href="#" data-go="${esc(c.slug)}">${esc(c.name)}</a>`
+    ).join('');
+
+    detail.innerHTML = `
+      <div class="detail">
+        ${breadcrumb}
+        <h2>${esc(t.name)}</h2>
+        <p class="desc">${esc(t.description || '')}</p>
+        <div class="section">
+          <div class="label">Members (${(t.members||[]).length})</div>
+          <div class="members">${members || '<span class="empty">none</span>'}</div>
+        </div>
+        <div class="section">
+          <div class="label">Repos (${(t.repos||[]).length})</div>
+          <table class="repo-table">
+            <thead><tr><th>Repo</th><th>Permission</th><th>CODEOWNERS paths</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="3" class="empty">none</td></tr>'}</tbody>
+          </table>
+        </div>
+        ${subteams ? `<div class="section subteams"><div class="label">Subteams</div>${subteams}</div>` : ''}
+      </div>`;
+  }
+
+  function select(slug) {
+    document.querySelectorAll('.tree-row').forEach(el => el.classList.remove('selected'));
+    const row = document.querySelector(`.tree-row[data-slug="${CSS.escape(slug)}"]`);
+    if (row) row.classList.add('selected');
+    renderDetail(slug);
+  }
+
+  const filterEl = document.getElementById('filter');
+
+  function matchesQuery(t, q) {
+    if (!q) return true;
+    const hay = [
+      t.name, t.description || '',
+      ...(t.repos || []).map(r => r.name),
+      ...(t.members || []),
+    ].join(' ').toLowerCase();
+    return hay.includes(q);
+  }
+
+  function applyFilter() {
+    const q = filterEl.value.trim().toLowerCase();
+    // Find matching teams; keep their ancestors visible too.
+    const keep = new Set();
+    for (const t of data.teams) {
+      if (matchesQuery(t, q)) {
+        let cur = t.slug;
+        while (cur) {
+          keep.add(cur);
+          cur = bySlug[cur].parent;
+        }
+      }
+    }
+    document.querySelectorAll('.tree-row').forEach(row => {
+      const slug = row.dataset.slug;
+      row.classList.toggle('hide', q !== '' && !keep.has(slug));
+    });
+  }
+
+  filterEl.addEventListener('input', applyFilter);
+
+  document.addEventListener('click', e => {
+    const row = e.target.closest('.tree-row');
+    if (row) { select(row.dataset.slug); return; }
+    const link = e.target.closest('[data-go]');
+    if (link) { e.preventDefault(); select(link.dataset.go); }
+  });
+})();
+</script>
+</body>
+</html>

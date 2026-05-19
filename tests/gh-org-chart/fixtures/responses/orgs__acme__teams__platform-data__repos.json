@@ -1,0 +1,3 @@
+[
+  {"full_name": "acme/dbt", "permissions": {"admin": true, "maintain": true, "push": true, "triage": true, "pull": true}}
+]

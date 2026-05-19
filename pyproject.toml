@@ -1,0 +1,23 @@
+[project]
+name = "skills"
+version = "0"
+requires-python = ">=3.13"
+
+[dependency-groups]
+dev = ["ruff", "pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "S", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "S603", "S607", "E501"]
+# render.py embeds HTML/CSS/JS as long template strings — line length here is noise, not code width.
+"gh-org-chart/scripts/render.py" = ["E501"]
