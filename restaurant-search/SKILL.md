@@ -8,6 +8,7 @@ compatibility: Requires hpp CLI and HOTPEPPER_API_KEY environment variable
 metadata:
   author: jackchuka
   scope: generic
+  layer: primitive
 ---
 
 # Restaurant Search

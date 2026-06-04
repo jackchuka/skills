@@ -17,6 +17,7 @@ compatibility: Designed for Claude Code
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - modify settings files
 ---

@@ -11,6 +11,7 @@ compatibility: Requires gh CLI and gh oss-watch extension
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - create GitHub releases
     - push to homebrew-tap

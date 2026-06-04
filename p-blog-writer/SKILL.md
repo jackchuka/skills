@@ -12,6 +12,7 @@ compatibility: NA
 metadata:
   author: jackchuka
   scope: personal
+  layer: renderer
   confirms:
     - save draft to filesystem
   skillctx:

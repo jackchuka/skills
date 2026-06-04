@@ -7,6 +7,7 @@ compatibility: Requires gh CLI, git, and access to the internet
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - approve PRs
     - merge PRs

@@ -12,8 +12,8 @@ compatibility: Requires gh CLI (authenticated), git, internet access
 metadata:
   author: jackchuka
   scope: generic
-  confirms:
-    - none (read-only skill)
+  layer: workflow
+  confirms: []
 ---
 
 # PR Review Triage

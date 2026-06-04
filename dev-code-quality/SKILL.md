@@ -11,6 +11,7 @@ compatibility: NA
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
 ---
 
 # Code Quality Scan

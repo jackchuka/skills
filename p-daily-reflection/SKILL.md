@@ -12,6 +12,7 @@ compatibility: Requires gh CLI. Slack MCP and Fireflies MCP servers optional.
 metadata:
   author: jackchuka
   scope: personal
+  layer: workflow
   confirms:
     - save to filesystem
     - update memory files

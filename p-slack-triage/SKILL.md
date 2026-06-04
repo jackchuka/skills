@@ -12,6 +12,7 @@ compatibility: Requires Slack MCP server
 metadata:
   author: jackchuka
   scope: personal
+  layer: workflow
   confirms:
     - send Slack messages
 ---

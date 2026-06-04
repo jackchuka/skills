@@ -10,6 +10,7 @@ compatibility: Requires gh CLI, gh oss-watch extension, and Go toolchain install
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - create PRs
     - merge PRs

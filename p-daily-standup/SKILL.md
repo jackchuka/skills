@@ -7,6 +7,7 @@ compatibility: Requires gh CLI, gws CLI, and Slack MCP server. Fireflies MCP ser
 metadata:
   author: jackchuka
   scope: personal
+  layer: workflow
   confirms:
     - post message to Slack
   skillctx:
