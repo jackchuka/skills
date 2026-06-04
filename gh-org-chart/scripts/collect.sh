@@ -34,12 +34,20 @@ for i in $(seq 0 $((team_count - 1))); do
   slug=$(echo "$teams" | jq -r ".[$i].slug")
 
   if [[ "$WITH_MEMBERS" == "1" ]]; then
-    members=$(gh api --paginate "/orgs/$ORG/teams/$slug/members" | jq '[.[].login]')
+    # Maintainers are fetched separately, then diffed against the full member
+    # list to tag each member's role. members: [{login, role}].
+    maintainers=$(gh api --paginate "/orgs/$ORG/teams/$slug/members?role=maintainer" | jq '[.[].login]')
+    members=$(gh api --paginate "/orgs/$ORG/teams/$slug/members" | jq --argjson mn "$maintainers" '
+      [.[] | {
+        login: .login,
+        role: (if (.login as $l | $mn | index($l)) then "maintainer" else "member" end)
+      }]')
     teams=$(echo "$teams" | jq --argjson m "$members" ".[$i].members = \$m")
   fi
 
   repos=$(gh api --paginate "/orgs/$ORG/teams/$slug/repos" | jq '[.[] | {
     name: .full_name,
+    archived: (.archived // false),
     permission: (
       if   .permissions.admin    then "admin"
       elif .permissions.maintain then "maintain"

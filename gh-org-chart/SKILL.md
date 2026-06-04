@@ -14,15 +14,17 @@ compatibility: Requires gh CLI authenticated with read:org scope, jq, and python
 metadata:
   author: jackchuka
   scope: generic
-  confirms: []
+  layer: workflow
+  confirms:
+    - save to filesystem
 ---
 
 # GitHub Org Chart
 
 Produces two artifacts in `${TMPDIR:-/tmp}/gh-org-chart/`:
 
-- `<org>-org.json` — canonical data: teams, members, owned repos, CODEOWNERS paths. Cache + hand-editable source of truth.
-- `<org>-org.html` — single self-contained file with a designed tree (left) and detail pane (right). Opens via `file://`, works offline.
+- `<org>-org.json` — canonical data: teams, members (with role), repos (with `archived` flag and permission), CODEOWNERS paths. Cache + hand-editable source of truth.
+- `<org>-org.html` — single self-contained interactive explorer rendered from the JSON. Opens via `file://`, works offline.
 
 Set `OUT_DIR` once at the start of every phase and reuse it:
 
@@ -108,4 +110,5 @@ mkdir -p "$OUT_DIR"
 - **Hand-editing the JSON**: edits survive across `/gh-org-chart <org>` runs because the freshness check reuses the file. Use `--refresh` when you want collection to overwrite your edits.
 - **CODEOWNERS attribution**: only `@<org>/<team-slug>` owners produce attributions. Individual user owners (`@alice`) and external orgs (`@other-org/team-x`) are intentionally ignored — this is a team-ownership view.
 - **No reporting lines**: GitHub teams reflect permission grouping, not management hierarchy. Manager → report relationships need a different data source (HRIS).
-- **Performance**: CODEOWNERS scan is restricted to owned repos (permission ≥ maintain) to keep API calls bounded.
+- **Performance**: CODEOWNERS scan is restricted to owned repos (permission ≥ maintain) to keep API calls bounded. Collecting roles adds one `?role=maintainer` call per team.
+- **Data shape** (for hand-editing / jq): `members` is `[{login, role}]` where `role` is `"maintainer"` or `"member"`; each repo carries `permission` and an `archived` flag. `--no-members` leaves `members` empty.
