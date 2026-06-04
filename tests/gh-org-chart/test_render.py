@@ -48,11 +48,12 @@ def test_render() -> None:
         size = out_path.stat().st_size
         assert size < 1_000_000, f"output too big: {size} bytes"
 
-        # Tree renders all team names and count pills
+        # Tree renders all team names and member/repo count metrics
         for team in data["teams"]:
             assert team["name"] in html, f"missing team name {team['name']}"
-            pill = f"{len(team['repos'])} &middot; {len(team['members'])}"
-            assert pill in html, f"missing count pill for {team['name']}: {pill}"
+            for n, label in ((len(team["members"]), "member(s)"), (len(team["repos"]), "repo(s)")):
+                metric = f'title="{n} {label}"'
+                assert metric in html, f"missing count metric for {team['name']}: {metric}"
 
         # Hierarchy: child team should be nested under parent in source order
         platform_idx = html.find(">Platform<")
@@ -69,12 +70,13 @@ def test_render() -> None:
         assert "addEventListener('click'" in html or 'addEventListener("click"' in html, (
             "missing click handler"
         )
-        assert "renderDetail" in html, "missing renderDetail function"
+        for fn in ("renderTeamDetail", "renderUserDetail", "renderRepoDetail"):
+            assert fn in html, f"missing {fn} function"
 
-        # All member logins appear somewhere (avatars or text)
+        # All member logins appear somewhere (avatars or text); members are {login, role}
         for team in data["teams"]:
-            for login in team["members"]:
-                assert login in html, f"missing member {login}"
+            for member in team["members"]:
+                assert member["login"] in html, f"missing member {member['login']}"
 
         # All repo names appear
         for team in data["teams"]:
@@ -90,3 +92,8 @@ def test_render() -> None:
         # Filter input present
         assert 'id="filter"' in html, "missing filter input"
         assert "applyFilter" in html, "missing applyFilter function"
+
+        # View switcher and archived-repo toggle present
+        for view in ("teams", "users", "repos", "chart"):
+            assert f'data-view="{view}"' in html, f"missing view switcher button {view}"
+        assert 'id="hide-archived"' in html, "missing hide-archived toggle"
