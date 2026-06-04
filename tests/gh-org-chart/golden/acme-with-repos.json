@@ -4,24 +4,30 @@
   "teams": [
     {
       "slug": "platform", "name": "Platform", "description": "infra & CI", "parent": null,
-      "members": ["alice", "bob"],
+      "members": [
+        {"login": "alice", "role": "maintainer"},
+        {"login": "bob",   "role": "member"}
+      ],
       "repos": [
-        {"name": "acme/infra-tf",   "permission": "admin"},
-        {"name": "acme/ci-runners", "permission": "admin"},
-        {"name": "acme/api",        "permission": "maintain"}
+        {"name": "acme/infra-tf",   "archived": false, "permission": "admin"},
+        {"name": "acme/ci-runners", "archived": true,  "permission": "admin"},
+        {"name": "acme/api",        "archived": false, "permission": "maintain"}
       ]
     },
     {
       "slug": "platform-data", "name": "Data Platform", "description": "warehouse & ingestion", "parent": "platform",
-      "members": ["carol"],
-      "repos": [{"name": "acme/dbt", "permission": "admin"}]
+      "members": [{"login": "carol", "role": "maintainer"}],
+      "repos": [{"name": "acme/dbt", "archived": false, "permission": "admin"}]
     },
     {
       "slug": "product", "name": "Product", "description": "customer-facing", "parent": null,
-      "members": ["dave", "erin"],
+      "members": [
+        {"login": "dave", "role": "member"},
+        {"login": "erin", "role": "member"}
+      ],
       "repos": [
-        {"name": "acme/web", "permission": "admin"},
-        {"name": "acme/api", "permission": "push"}
+        {"name": "acme/web", "archived": false, "permission": "admin"},
+        {"name": "acme/api", "archived": false, "permission": "push"}
       ]
     }
   ]
