@@ -7,6 +7,7 @@ compatibility: Requires gws CLI
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - create calendar event
 ---

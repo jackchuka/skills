@@ -7,6 +7,7 @@ compatibility: NA
 metadata:
   author: jackchuka
   scope: generic
+  layer: renderer
 ---
 
 # Project Namer

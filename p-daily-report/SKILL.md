@@ -8,6 +8,7 @@ compatibility: Requires gh CLI, gws CLI, and Slack MCP server
 metadata:
   author: jackchuka
   scope: personal
+  layer: workflow
   confirms:
     - save report to filesystem
   skillctx:

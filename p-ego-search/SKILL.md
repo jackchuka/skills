@@ -9,6 +9,7 @@ compatibility: Requires gh CLI, Slack MCP server, and Fireflies MCP server
 metadata:
   author: jackchuka
   scope: personal
+  layer: workflow
   skillctx:
     version: "0.1.0"
 ---

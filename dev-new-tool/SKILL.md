@@ -7,6 +7,7 @@ compatibility: Requires git and access to the internet
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - scaffold project directory
 ---

@@ -7,6 +7,7 @@ compatibility: Requires git
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - create git commit
 ---

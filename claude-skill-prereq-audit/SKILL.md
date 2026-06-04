@@ -12,6 +12,7 @@ compatibility: Designed for Claude Code
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - install missing tools
 ---

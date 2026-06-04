@@ -2,9 +2,14 @@
 name: p-md-to-slides
 license: MIT
 description: Convert a structured Markdown deck source into a styled Google Slides presentation. Use this skill when the user has a slide.md file (or wants to write one) and wants Google Slides output — talks, LT decks, lecture slides, conference presentations, internal explainers. Trigger phrases include "md からスライド作って", "slide.md を Google Slides にして", "発表資料を Google Slides で", "convert this markdown to slides", "build a Google Slides deck from this markdown", "make slides from md", "/md-to-slides", and similar. Also use when the user references a presentation/<date>/slide.md file structure with `## Slide N — title`, `**話すこと:**`, and `**スライド要素:**` sections.
+argument-hint: "<slide.md path> [deck title]"
+compatibility: Requires gws CLI authenticated for Google Slides
 metadata:
   author: jackchuka
   scope: personal
+  layer: renderer
+  confirms:
+    - create Google Slides presentation
 ---
 
 # p-md-to-slides

@@ -8,6 +8,7 @@ compatibility: Requires access to the internet
 metadata:
   author: jackchuka
   scope: personal
+  layer: workflow
   confirms:
     - save briefing to filesystem
   skillctx:

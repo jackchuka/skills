@@ -12,6 +12,7 @@ compatibility: Requires gh CLI authenticated with repo scope
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - create GitHub issues
 ---

@@ -11,6 +11,7 @@ compatibility: Requires git and language-specific linters
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
 ---
 
 # OSS Release Preparation

@@ -7,6 +7,7 @@ compatibility: Requires Slack MCP server. Fireflies MCP server optional.
 metadata:
   author: jackchuka
   scope: personal
+  layer: workflow
   confirms:
     - save to filesystem
 ---
