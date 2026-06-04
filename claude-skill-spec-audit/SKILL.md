@@ -2,17 +2,19 @@
 name: claude-skill-spec-audit
 license: MIT
 description: >
-  Audit skill SKILL.md files for compliance with the agentskills.io specification.
-  Checks frontmatter fields (name, description, compatibility, metadata, argument-hint)
-  and metadata sub-fields (author, scope, confirms). Use when adding new skills,
-  reviewing skill quality, or ensuring all skills follow the spec.
-  Triggers: "audit skills", "check skill spec", "skill compliance", "are my skills
-  up to spec", "/claude-skill-spec-audit".
+  Audit skill SKILL.md files for compliance with the agentskills.io specification
+  and house conventions. Checks frontmatter fields (name, description,
+  compatibility, metadata, argument-hint), metadata sub-fields (author, scope,
+  layer, confirms), and layer/suffix consistency. Use when adding new skills,
+  reviewing skill quality, or ensuring all skills follow the spec. Triggers:
+  "audit skills", "check skill spec", "skill compliance", "are my skills up
+  to spec", "/claude-skill-spec-audit".
 argument-hint: "[skill-name ...] [--fix]"
 compatibility: Designed for Claude Code
 metadata:
   author: jackchuka
   scope: generic
+  layer: workflow
   confirms:
     - add missing frontmatter fields
 ---
@@ -39,12 +41,12 @@ Check installed skills against the [agentskills.io specification](https://agents
 
 ## Naming Conventions
 
-Skill names follow the pattern: `[scope]-[platform/org]-[group]-[name]`
+Skill names follow the pattern: `[scope]-[platform/org]-[group]-<name-with-layer-suffix>`
 
 ### Rules
 
 1. Lowercase, kebab-case, no consecutive hyphens, 2-4 words, max 40 chars
-2. Role-noun suffixes allowed (`-writer`, `-scheduler`, `-namer`)
+2. **Suffix encodes the layer** (see "Layer Conventions" below)
 3. Standardized action synonyms: `audit` (compliance), `scan` (broad analysis), `search` (lookup), `triage` (classify+act)
 
 ### Scope prefix (required)
@@ -80,16 +82,37 @@ Derived from `metadata.scope`:
 
 When creating a new skill, check for existing siblings. If a second skill appears in the same domain, retroactively add a shared prefix to both.
 
+### Layer Conventions
+
+Every skill is exactly one of four **layers**, declared via `metadata.layer`. The
+**suffix** of the name must match the layer.
+
+| Layer | `metadata.layer` | Suffix family | Example |
+| --- | --- | --- | --- |
+| Primitive | `primitive` | verb: `-read`, `-list`, `-fetch`, `-search`, `-post`, `-insert`, `-append`, `-query`, `-get`, `-scan` | `gws-sheets-read` |
+| Renderer | `renderer` | format noun (`-slides`, `-docs`, `-pdf`, `-card`, `-message`) or agent noun (`-writer`, `-explainer`, `-namer`, `-generator`) | `gws-slides`, `visual-explainer` |
+| Workflow | `workflow` | outcome noun: `-digest`, `-deck`, `-report`, `-triage`, `-audit`, `-standup`, `-prep`, `-recap`, `-investigation` | `o-tailor-allhands-deck` |
+| Reference | `reference` | `-shared` | `o-tailor-shared` |
+
+**Reference skills** must:
+
+- End in `-shared`.
+- Begin their description with: `"Internal reference loaded by other <prefix>-* skills. Do not invoke directly."`
+- Not appear in user-facing trigger phrases.
+
+See [`~/.claude/skills/CONVENTIONS.md`](../CONVENTIONS.md) for full rationale.
+
 ## Local Conventions (beyond spec)
 
 These are project-specific conventions enforced on top of the spec:
 
-| Field               | Expected                  | Values                                         |
-| ------------------- | ------------------------- | ---------------------------------------------- |
-| `argument-hint`     | If skill accepts args     | Short usage hint string                        |
-| `metadata.author`   | Always                    | Must be present (non-empty)                    |
-| `metadata.scope`    | Always                    | `generic`, `personal`, or `organization`       |
-| `metadata.confirms` | If skill has side effects | List of operations requiring user confirmation |
+| Field               | Expected                  | Values                                                       |
+| ------------------- | ------------------------- | ------------------------------------------------------------ |
+| `argument-hint`     | If skill accepts args     | Short usage hint string                                      |
+| `metadata.author`   | Always                    | Must be present (non-empty)                                  |
+| `metadata.scope`    | Always                    | `generic`, `personal`, or `organization`                     |
+| `metadata.layer`    | Always                    | `primitive`, `renderer`, `workflow`, or `reference`          |
+| `metadata.confirms` | If skill has side effects | List of operations requiring user confirmation               |
 
 ## Workflow
 
