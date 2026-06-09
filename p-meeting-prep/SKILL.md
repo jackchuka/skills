@@ -58,8 +58,6 @@ Generate per-meeting prep briefs for today's calendar (one markdown file per mee
 
 ## Workflow
 
-(filled in by later tasks)
-
 ### Phase 1: Initialize
 
 1. Parse arguments:
@@ -92,6 +90,8 @@ Generate per-meeting prep briefs for today's calendar (one markdown file per mee
 5. Save the classified list as `MEETINGS = [{event, category, topic_key, cluster_id, …}]` for Phase 3.
 
 ### Phase 3: Parallel source fetch
+
+First, read the attendee cache once — `~/.cache/p-meeting-prep/attendees.json` (see `references/attendee-cache.md`) — and pass relevant entries to the GitHub and Slack fetches so cached attendees skip live resolution entirely.
 
 For each meeting, pick the source set from this table:
 
@@ -132,7 +132,20 @@ For each meeting in `MEETINGS`:
 3. If the meeting belongs to a cluster of size ≥ 2, add the `Related today:` line referencing the sibling filenames computed in Phase 5.
 4. Empty data sections render as `_(no relevant context found)_` rather than being omitted, so the user can tell the skill looked.
 
-Store the rendered markdown per event as `BRIEFS[event_id]`.
+Store the rendered markdown per event as `BRIEFS[event_id]`. This completes **Pass 1**.
+
+**Pass 2 — cross-scan (after all briefs are drafted):**
+
+Filenames are deterministic from Phase 2 data (chronological order + start time + title slug) — compute them before Pass 2 so both cluster links and overlap links can reference sibling files.
+
+1. Detect overlaps across the day's drafts:
+   - (a) shared non-self attendees appearing in 2+ meetings;
+   - (b) shared salient topics/entities — proper nouns, repo names, project names appearing in 2+ briefs' bodies (e.g. `changelog-management`).
+2. For each overlap, inject into the header block of every affected brief:
+   `Related today: [<sibling file>](<sibling file>) — <shared attendee or topic, one short clause>`
+   Multiple siblings → comma-separated. Merge with any existing cluster-based `Related today:` line rather than duplicating it.
+3. `other`-category meetings are excluded from the cross-scan (they have no body and no fetches).
+4. Record the overlap list as `OVERLAPS` for the index (Phase 5).
 
 ### Phase 5: Write files
 
@@ -145,6 +158,7 @@ Store the rendered markdown per event as `BRIEFS[event_id]`.
    - `NN` = zero-padded sequence starting at 01 (the index uses `00`).
    - `HHMM` = local start time, 24-hour, no colon.
    - `<slug>` = ASCII-folded, lowercase, hyphenated title; collapse runs of non-`[a-z0-9]` to a single `-`; trim to 40 chars; strip leading/trailing `-`.
+   - If ASCII-folding leaves fewer than 4 useful characters (typical for Japanese titles), romanize instead: kanji/kana → romaji words, katakana loanwords → their English source word. Example: `採用：グッズブレストMTG` → `saiyo-goods-brainstorm-mtg`. Same 40-char cap and collision rule.
    - Final name: `NN-HHMM-<slug>.md`.
 5. Write `00-index.md` first:
 
@@ -159,14 +173,19 @@ Store the rendered markdown per event as `BRIEFS[event_id]`.
 ## Clusters
 - `<topic_key>` — <count> meetings (HH:MM, HH:MM, ...)
 ... (only clusters with size ≥ 2)
+
+## Overlaps
+- <shared attendee or topic> — <count> meetings (HH:MM, HH:MM, ...)
+... (from Pass 2 cross-scan; omit the section when `OVERLAPS` is empty)
 ```
 
 If `N == 0`, the index body is `No meetings today.` and no per-meeting files are written.
 
 6. Write one file per meeting using `BRIEFS[event_id]`.
-7. Print the absolute path to `00-index.md` and a one-line summary (`N meetings · K categories · C clusters`).
-8. On macOS (`uname -s` = `Darwin`), unless `--no-open` or `--dry-run`, run `open "<00-index.md>"`.
-9. If `--dry-run`, do NOT touch the filesystem at all. Instead, print to stdout: the index body, then each brief separated by `---`.
+7. Merge any live attendee resolutions from this run back into `~/.cache/p-meeting-prep/attendees.json` (read-modify-write; see `references/attendee-cache.md`).
+8. Print the absolute path to `00-index.md` and a one-line summary (`N meetings · K categories · C clusters`).
+9. On macOS (`uname -s` = `Darwin`), unless `--no-open` or `--dry-run`, run `open "<00-index.md>"`.
+10. If `--dry-run`, do NOT touch the filesystem at all. Instead, print to stdout: the index body, then each brief separated by `---`.
 
 ## Error Handling
 
@@ -179,6 +198,7 @@ If `N == 0`, the index body is `No meetings today.` and no per-meeting files are
 | Classification LLM call fails / bad JSON    | Treat every meeting as `other`. Add a warning to the top of `00-index.md`.              |
 | Per-meeting source fetch timeout (15s)      | Section renders as `_(unavailable)_`. No retry within this run.                         |
 | `OUTPUT_DAY_DIR` exists from a prior run    | Rename to `<dir>.bak/` (replacing any prior backup) before writing.                     |
+| Attendee cache missing / corrupt JSON       | Treat as empty cache; resolve live; rewrite the file at end of run.                      |
 | Calendar empty for the target date          | Write `00-index.md` with body `No meetings today.` Exit 0.                              |
 | `--dry-run` set                             | Print to stdout only. Do not touch the filesystem. Do not call `open`.                  |
 | Filename slug collision (rare)              | Append `-2`, `-3`, … to the slug until unique within the day's directory.               |
