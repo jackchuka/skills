@@ -9,7 +9,7 @@ Meet: <link or "—">
 Related today: <links to sibling cluster briefs, if any>
 ```
 
-If there are no sibling briefs, omit the `Related today:` line entirely.
+If there are neither cluster siblings nor Pass 2 cross-scan overlaps, omit the `Related today:` line entirely.
 
 ## Body sections (in this order)
 
@@ -30,8 +30,13 @@ If there are no sibling briefs, omit the `Related today:` line entirely.
 
 ### What to raise
 
-- 2–3 bullets synthesized from: still-open action items + recent Slack threads + their recent activity.
-- Each bullet should be a concrete topic, not a question. Use `{lang}` (ja or en) for phrasing.
+- 3–5 bullets, ordered by lens priority, each prefixed with a tag (ja shown; en uses `[Decide]` `[Unblock]` `[Follow-up]` `[Long-term]`):
+  1. `【判断】` — decisions awaiting the user: open questions, approvals, direction calls. Include enough inline context to decide on the spot.
+  2. `【ブロック解除】` — the counterpart is stuck waiting on the user (reviews, access, coordination). Name the concrete unblocking action.
+  3. `【フォロー】` — commitments by either side (Fireflies action items, Slack promises) not visibly closed.
+  4. `【中長期】` — at most 1 strategic/coaching prompt (growth, project direction, recurring friction worth naming).
+- **Hard rule:** every bullet must carry a "so what / why now" clause. A bullet that merely restates an item from "Their recent activity" is disallowed.
+- Include a source link per bullet when available. Use `{lang}` (ja or en) for phrasing.
 
 ### Open questions for them
 
