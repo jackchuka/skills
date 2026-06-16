@@ -139,6 +139,26 @@ Only proceed with merging if the user explicitly asks. Never auto-merge.
 
 When merging multiple dependency PRs, each merge can create conflicts in remaining PRs (especially in lockfiles and generated files).
 
+### Approve before merging
+
+Submit an approving review on each PR **before** merging it — never merge an unreviewed PR. The approval is the record that the PR was triaged and judged safe; merging without it skips that record.
+
+**Ask the user first.** Approving is a distinct action from merging — do not auto-approve. After Phase 2, ask whether to approve the PRs (and which ones). Only approve the PRs the user confirms.
+
+**Approve with a comment carrying the investigation findings.** Use `--body` to attach the Phase 2 verdict for that PR's dependency — version change, key changelog notes, and the safe-to-merge reasoning — so the approval is self-documenting. Approve in parallel across repos with error isolation, then verify the review landed:
+
+```bash
+# Approve each PR with the investigation summary as the review comment
+gh pr review <number> --repo <owner/repo> --approve \
+  --body "esbuild 0.28.0 → 0.28.1 (patch, dev-only). Security + bug fixes only, no breaking changes. Safe to merge." 2>&1 || true
+
+# Verify the approval was recorded
+gh pr view <number> --repo <owner/repo> --json reviews \
+  --jq '.reviews[] | "\(.author.login): \(.state)"'
+```
+
+If you merged before approving, GitHub still accepts a retroactive `--approve` on a merged PR — submit it and verify, but treat this as a mistake to avoid, not the normal path.
+
 ### Merge strategy
 
 **Parallel across repos, sequential within a repo.** PRs in different repos are independent and can be merged simultaneously. PRs in the same repo must be merged one at a time because each merge can dirty the next PR's lockfile.
@@ -166,6 +186,7 @@ gh pr view <number> --repo <owner/repo> --json state --jq .state
 
 ### Merge order
 
+0. **Approve first** — ask the user which PRs to approve, then submit and verify an approving review carrying the Phase 2 findings on each confirmed PR before merging it (see "Approve before merging" above)
 1. **Merge across repos in parallel** — independent repos can't conflict with each other
 2. **Within a repo, merge sequentially** — wait for each merge before attempting the next
 3. **After each batch, check remaining PRs** — earlier merges create lockfile conflicts in later PRs
@@ -198,4 +219,5 @@ gh search prs --author app/renovate --author app/dependabot --state open --owner
 - **Clean up after yourself** — always remove worktrees and local branches when done
 - **Report clearly** — give the user a summary table at each phase so they can make informed decisions
 - **Never merge without explicit request** — the default workflow stops after CI is green; merging is a separate step only if asked
+- **Approve before merging, but ask first** — approving is a separate action from merging; ask the user which PRs to approve, then submit an approving review carrying the Phase 2 investigation findings as the comment body before merging
 - **Final sweep** — after merging, check for newly opened PRs triggered by the merges
