@@ -1,11 +1,15 @@
 # Scheduling Recipes
 
-Two ways to run `/p-meeting-prep` on a schedule. Both must inherit credentials for `gh`, `gws`, the Slack MCP server, and the Fireflies MCP server (or those sources will be marked unavailable).
+Two ways to run `/p-meeting-prep` on a schedule.
+
+Both **must** pass `--non-interactive`: a scheduled run has nobody to answer Phase 3's questions, and an unanswered prompt stalls the whole run.
+
+Both should also inherit credentials for `gh`, `gws`, the Slack MCP server, and the Fireflies MCP server — without them those sources are marked unavailable and the briefs come out thinner.
 
 ## Option A — Claude Code `/schedule`
 
 ```text
-/schedule add --name meeting-prep --cron "0 7 * * 1-5" --tz "Asia/Tokyo" -- /p-meeting-prep
+/schedule add --name meeting-prep --cron "0 7 * * 1-5" --tz "Asia/Tokyo" -- /p-meeting-prep --non-interactive
 ```
 
 This runs the slash command weekdays at 07:00 JST and writes briefs to `{output_dir}/YYYY-MM-DD/`.
@@ -24,7 +28,7 @@ Save as `~/Library/LaunchAgents/tech.tailor.meeting-prep.plist`:
   <array>
     <string>/bin/zsh</string>
     <string>-lc</string>
-    <string>claude --resume --once "/p-meeting-prep"</string>
+    <string>claude --resume --once "/p-meeting-prep --non-interactive"</string>
   </array>
   <key>StartCalendarInterval</key>
   <array>
