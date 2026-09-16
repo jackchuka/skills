@@ -29,5 +29,6 @@ gws calendar events list --params "{\"calendarId\":\"primary\",\"timeMin\":\"${T
 
 ## Error handling
 
-- If `gws` fails entirely, abort the skill with an error — the calendar is the one required source.
+- If `gws` is missing or fails entirely, fall back to the Google Calendar MCP `list_events` (`startTime` / `endTime` / `orderBy: startTime` / `timeZone`) and record the
+  substitution in `FALLBACKS`. Abort only when that fails too — the calendar is the one required source.
 - If the day has zero events, return an empty list; do not error.
