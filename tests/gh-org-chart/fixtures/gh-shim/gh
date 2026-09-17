@@ -3,6 +3,9 @@
 # canned response files under $GH_SHIM_RESPONSES (or ../responses relative to
 # this script). Supports the `-H "Accept: application/vnd.github.v3.raw"` form
 # by mapping to a raw file under responses/codeowners/<repo-slug>.txt.
+#
+# Fixture names must stay checkout-safe on Windows, so `/`, `?` and `&` all map
+# to `__` and `=` maps to `-`.
 
 set -euo pipefail
 
@@ -40,8 +43,14 @@ if [[ "$RAW" == "1" ]]; then
 fi
 
 # Normal JSON: URL "/orgs/acme/teams" -> orgs__acme__teams.json
+# Query strings are flattened too, since `?` and `=` are illegal in filenames on
+# Windows: "/orgs/acme/teams/platform/members?role=maintainer"
+# -> orgs__acme__teams__platform__members__role-maintainer.json
 key="${URL#/}"
 key="${key//\//__}"
+key="${key//\?/__}"
+key="${key//=/-}"
+key="${key//&/__}"
 file="$RESPONSES/$key.json"
 if [[ -f "$file" ]]; then cat "$file"; exit 0; fi
 echo "gh-shim: missing fixture $file (URL $URL)" >&2; exit 1
