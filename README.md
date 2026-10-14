@@ -1,16 +1,84 @@
-# Skills
+<div align="center">
 
-A collection of [Skills](https://agentskills.io) - jackchuka's personal library of agent workflows.
+# skills
+
+**Agent Skills for GitHub chores, code review, and the daily work loop.**
+
+32 [Agent Skills](https://agentskills.io) that turn repeatable workflows into one prompt,<br>
+installable into Claude Code, Copilot, Cursor, Codex, and other agents that read `SKILL.md`.
+
+[![Test](https://github.com/jackchuka/skills/actions/workflows/test.yml/badge.svg)](https://github.com/jackchuka/skills/actions/workflows/test.yml)
+[![Validate Skills](https://github.com/jackchuka/skills/actions/workflows/validate-skills.yml/badge.svg)](https://github.com/jackchuka/skills/actions/workflows/validate-skills.yml)
+[![Release](https://img.shields.io/github/v/release/jackchuka/skills?sort=semver)](https://github.com/jackchuka/skills/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+[Installation](#installation) · [Quick Start](#quick-start) · [Skills](#skills) · [Conventions](#conventions) · [Contributing](CONTRIBUTING.md)
+
+</div>
+
+---
+
+Many engineering chores follow the same steps every time: triage a backlog of dependency PRs, cut releases across a dozen repos, check a repo before making it public, write a standup from yesterday's activity. Explaining those steps to an agent again in every session is slow, and the result varies from run to run.
+
+Each folder here is a self-contained skill: a `SKILL.md` with the procedure, the tools it needs, and the points where it must stop and ask before acting. Some skills also ship helper scripts. Install the ones you want, and the agent loads a skill when your request matches its description.
+
+## Features
+
+- **Spec-compliant** — every `SKILL.md` follows the [agentskills.io specification](https://agentskills.io/specification) and is checked in CI with `gh skill publish --dry-run`
+- **Works across agents** — install with `gh skill` or `npx skills` into Claude Code, GitHub Copilot, Cursor, Codex, Gemini CLI, and more
+- **Explicit prerequisites** — the `compatibility` field states the CLIs and MCP servers each skill needs (`gh`, `gws`, Slack MCP, ...)
+- **Confirmation points** — `metadata.confirms` lists the side effects a skill must confirm before acting, such as creating a release or sending a message
+- **Tested helpers** — scripts that ship with a skill (for example `gh-org-chart`'s `collect.sh` and `render.py`) have pytest suites and ruff linting
+- **Personal settings kept out of the skill** — `p-*` skills read values like your name or Slack channel from `~/.config/skillctx/config.json` instead of hard-coding them
 
 ## Installation
 
-To install skills:
+With the [GitHub CLI](https://cli.github.com) (v2.90.0 or later, `gh skill` is in preview):
 
-```sh
-npx skills add jackchuka/skills
+```bash
+gh skill install jackchuka/skills                       # pick skills interactively
+gh skill install jackchuka/skills gh-dep-pr-triage      # one skill
+gh skill install jackchuka/skills --all --agent claude-code --scope user
 ```
 
+With the [`skills`](https://www.npmjs.com/package/skills) CLI:
+
+```bash
+npx skills add jackchuka/skills                         # pick skills interactively
+npx skills add jackchuka/skills --skill gh-dep-pr-triage
+npx skills add jackchuka/skills --list                  # list without installing
+```
+
+Or copy a skill folder by hand into your agent's skills directory (for Claude Code, `~/.claude/skills/<name>/`).
+
+## Quick Start
+
+1. **See what is available.** Run `gh skill install` without a skill name in a non-interactive shell to print the catalog:
+
+   ```console
+   $ gh skill install jackchuka/skills | cut -c1-80
+   Using ref v0.6.1 (2a18ef5c)
+   Note: found 32 skill(s) at the repository root
+   [root] claude-permissions-audit	Review and reorganize Claude Code permission setti
+   [root] claude-skill-orchestration-audit	Audit skills for agentic orchestration qu
+   ...
+   ```
+
+2. **Install** the skills you want (see [Installation](#installation)).
+
+3. **Check prerequisites.** Install `claude-skill-prereq-audit` and ask the agent to "check prerequisites". It reads each installed skill's `compatibility` field and reports missing CLIs, MCP servers, or authentication.
+
+4. **Ask in plain language.** The agent picks the skill from its description, or you can call it by name:
+
+   ```text
+   > triage the open renovate PRs in this repo
+   > /gh-oss-release-prep
+   > find time with alice next week for a 1:1
+   ```
+
 ## Skills
+
+The table below is generated from each skill's frontmatter by `./generate-readme.sh`.
 
 <!-- SKILLS_START -->
 | Skill | Description |
@@ -50,14 +118,56 @@ npx skills add jackchuka/skills
 
 <!-- SKILLS_END -->
 
+## Conventions
+
+### Name prefixes
+
+| Prefix    | Area                                                 | Example                   |
+| --------- | ---------------------------------------------------- | ------------------------- |
+| `claude-` | Claude Code configuration and skill auditing         | `claude-skill-spec-audit` |
+| `dev-`    | Software design and code quality                     | `dev-code-quality`        |
+| `gh-`     | GitHub repos, PRs, issues, releases, and orgs        | `gh-oss-release`          |
+| `git-`    | Local git workflow                                   | `git-conventional-commit` |
+| `gws-`    | Google Workspace through the `gws` CLI               | `gws-meeting-scheduler`   |
+| `p-`      | Personal productivity (Slack, calendar, notes, blog) | `p-daily-standup`         |
+
+Skills without a prefix (`project-namer`, `restaurant-search`) are standalone utilities.
+
+### Frontmatter metadata
+
+Beyond the spec fields (`name`, `description`, `license`, `compatibility`), skills here use these fields:
+
+| Field               | Values                          | Meaning                                                       |
+| ------------------- | ------------------------------- | ------------------------------------------------------------- |
+| `metadata.scope`    | `generic`, `personal`           | `personal` skills assume your own accounts and settings       |
+| `metadata.layer`    | `workflow`, `primitive`, `renderer` | Multi-step procedure, single action, or output formatter  |
+| `metadata.confirms` | list                            | Side effects the agent must confirm first (if the skill has any) |
+| `argument-hint`     | string                          | Arguments shown when invoking the skill as a slash command    |
+
+### Personal settings (`p-*` skills)
+
+Eight `p-*` skills, such as `p-daily-standup` and `p-blog-writer`, contain placeholders like `{channel_id}` or `{user_name}`. Before running, the skill calls its bundled resolver, which reads `${XDG_CONFIG_HOME:-~/.config}/skillctx/config.json`; missing values are asked for and saved with `set`:
+
+```bash
+python <skill-dir>/scripts/skillctx-resolve.py resolve p-daily-standup
+python <skill-dir>/scripts/skillctx-resolve.py set p-daily-standup <key> <value>
+```
+
 ## Development
 
-This README is generated from the SKILLS.md files in each skill directory. To update it, run:
+Requires [`uv`](https://github.com/astral-sh/uv) and `gh` v2.90.0 or later.
 
-```sh
-./generate-readme.sh
+```bash
+uv sync --group dev          # install ruff and pytest
+uv run pytest                # run helper-script tests
+uv run ruff check .          # lint
+uv run ruff format --check . # format check (same as CI)
+gh skill publish --dry-run   # validate every SKILL.md against the spec
+./generate-readme.sh         # regenerate the Skills table
 ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the repository layout and how to add a skill.
 
 ## License
 
-All skills are licensed under the [MIT License](LICENSE).
+[MIT](LICENSE)
