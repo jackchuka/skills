@@ -46,6 +46,14 @@ dist/
 Thumbs.db
 ```
 
+## .github/CODEOWNERS (all repos)
+
+Dependabot assigns reviewers from CODEOWNERS; the `reviewers` key in dependabot.yml was removed by GitHub in 2025 and must not be used.
+
+```
+* @jackchuka
+```
+
 ## .github/dependabot.yml (all Go repos)
 
 ```yaml
@@ -60,8 +68,6 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    reviewers:
-      - "jackchuka"
     labels:
       - "dependencies"
       - "go"
@@ -75,8 +81,6 @@ updates:
     commit-message:
       prefix: "ci"
       include: "scope"
-    reviewers:
-      - "jackchuka"
     assignees:
       - "jackchuka"
     labels:
@@ -93,6 +97,8 @@ on:
   pull_request:
   push:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -118,6 +124,8 @@ on:
     paths: ["go.mod", "go.sum"]
   push:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   check-licenses:
     runs-on: ubuntu-latest
@@ -179,6 +187,19 @@ changelog:
   filters:
     exclude: ["^docs:", "^test:", "^chore:", "^style:", "^refactor:"]
 ```
+
+## Go version
+
+- `go.mod` `go` directive: latest stable patch (e.g. `go 1.27.3`). CI reads it via `go-version-file`, so never hardcode versions in workflows.
+- README "Requirements" must state the same minor version as `go.mod` (e.g. "Go 1.27 or later"). Grep the README for `Go 1.` and fix any stale mention.
+
+## Versioning (libraries)
+
+Libraries must have semver tags (`v0.1.0`, ...) so consumers get readable versions instead of pseudo-versions. Tag `v0.1.0` on first publish and bump per semver afterwards; no release workflow is needed.
+
+## cgo
+
+Convert C arrays to Go slices with `unsafe.Slice(ptr, n)`, not the legacy `(*[1 << 28]T)(unsafe.Pointer(ptr))[:n:n]` cast.
 
 ## Common errcheck fixes
 

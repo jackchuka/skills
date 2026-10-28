@@ -110,7 +110,9 @@ Copy CI configuration from sibling repo, adapting project-specific values:
 
 **For all projects:**
 - Test + lint workflow (on push/PR)
-- Dependabot or Renovate config for dependency updates
+- `permissions: contents: read` at the top of every read-only workflow (test, lint, license); grant `write` only in release/publish workflows
+- `.github/CODEOWNERS` (`* @<owner>`)
+- Dependabot or Renovate config for dependency updates (no `reviewers` key in dependabot.yml; CODEOWNERS handles review requests)
 - License check workflow (on dependency changes)
 
 **For CLI tools / binaries only:**
@@ -132,9 +134,11 @@ OSS Release Readiness:
 - [ ] No secrets, internal URLs, or sensitive data in code
 - [ ] .gitignore covers build artifacts, IDE files, OS files
 - [ ] Linter config exists and passes with no errors
-- [ ] CI workflows exist (test, lint, license check)
+- [ ] CI workflows exist (test, lint, license check) with least-privilege `permissions`
+- [ ] .github/CODEOWNERS exists; dependabot.yml has no `reviewers`
+- [ ] README's required language version matches go.mod / engines
 - [ ] Tests pass
-- [ ] Version/tag strategy defined (semver)
+- [ ] Version/tag strategy defined (semver); libraries have at least one semver tag
 - [ ] [CLI only] Release automation configured (goreleaser)
 - [ ] [CLI only] Homebrew tap / package registry configured
 ```
@@ -147,7 +151,7 @@ For each unchecked item, provide the specific fix needed.
 2. Commit all changes in a single commit (or logical groups)
 3. Push and verify CI passes
 4. Suggest next steps:
-   - **Libraries**: tag release, verify `go get` / npm install works
+   - **Libraries**: tag a semver release (e.g. `v0.1.0`), verify `go get` / npm install resolves the tag (not a pseudo-version)
    - **CLI tools**: tag release, verify goreleaser produces artifacts, update Homebrew tap
 
 ## Common Issues
