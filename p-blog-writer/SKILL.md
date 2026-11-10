@@ -9,6 +9,7 @@ description: >
   "help me write about", or wants to create blog content.
 argument-hint: "<topic> [--type tool|opinion|deep-dive|tutorial] [--platform {default_platform}|{alt_platform}]"
 compatibility: NA
+disable-model-invocation: true
 metadata:
   author: jackchuka
   scope: personal
