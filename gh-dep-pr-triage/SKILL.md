@@ -74,6 +74,11 @@ When the same dependency appears across multiple repos (e.g., oxlint bumped in 3
    - Pre-1.0 minor bumps (e.g., 0.x → 0.y) → check carefully, semver allows breaking changes
    - Major bump or behavior changes → flag for user review
    - Breaking changes documented → flag with details
+4. **Find adoption opportunities** — cross-reference the changelog's new features and deprecations against how the project actually uses the dependency (grep the call sites and config):
+   - Workarounds, polyfills, or hand-rolled code the new version makes unnecessary
+   - Deprecated APIs or options still in use (migrate now, before the next major removes them)
+   - Newly available config, lint rules, or performance options worth enabling
+   - Skip generic "nice to have" features with no concrete call site in the project
 
 Report back a structured summary per dependency:
 
@@ -81,8 +86,11 @@ Report back a structured summary per dependency:
 - Version change (from → to)
 - Breaking changes or behavior changes (if any)
 - Verdict: **safe to merge** or **needs review** with reasoning
+- Adoption: **worth adopting** (with the feature and the file:line it applies to) or **nothing to adopt**
 
-After presenting the investigation summary, ask the user if they want to proceed with fixing failing PRs.
+Keep the safety verdict and the adoption assessment separate — a PR can be safe to merge even when there is follow-up work to adopt. Do not fold adoption changes into the dependency PR; keep the bump small and propose the adoption as a separate issue or PR, filing it only if the user agrees.
+
+After presenting the investigation summary, ask the user whether to file the adoption follow-ups and whether to proceed with fixing failing PRs.
 
 ## Phase 3: Fix Failing PRs
 
