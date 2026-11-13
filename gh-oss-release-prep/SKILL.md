@@ -37,7 +37,7 @@ Before starting, determine the project type — this affects which steps apply:
 | **Library / module** | No | No | `go get` / npm / PyPI |
 | **Both** (tool + importable pkg) | Yes | Yes | Both |
 
-This classification drives decisions in Steps 3-6. Don't suggest goreleaser for a library. Don't skip install instructions for a binary.
+This classification drives decisions in Steps 3-7. Don't suggest goreleaser for a library. Don't skip install instructions for a binary.
 
 ## Step 1: Repository Scan
 
@@ -116,7 +116,32 @@ Copy CI configuration from sibling repo, adapting project-specific values:
 **For libraries only:**
 - No release workflow needed (tags are sufficient for `go get` / npm)
 
-## Step 6: Release Readiness Checklist
+## Step 6: Agent Skill
+
+Decide whether the project should ship an [Agent Skills](https://agentskills.io) `SKILL.md` so coding agents can use it. Recommend one way and say why.
+
+**Ship a skill when** agents would use the tool and `--help` alone is not enough:
+- Using it takes several steps or judgment (which flags, what to rerun, how to read the output)
+- The output needs interpretation before acting on it (verdicts, scores, findings)
+- It pairs with other tools in a workflow (feeds PRs, issues, or configs onward)
+
+**Skip it when** the tool is a single obvious command, a library whose API docs already cover usage, or something agents would not run.
+
+If shipping one:
+1. **Check for an existing copy first.** Search the user's personal skills repo and `~/.claude/skills` for a skill with the tool's name. Keep one source: the tool repo, so the skill versions with the tool. Merge the useful parts of other copies into it, then ask before deleting them.
+2. **Make the CLI agent-ready before writing.** It must run without prompts and offer machine-readable output (`--format json`). Fix gaps in the tool, not with workarounds in the skill.
+3. **Place it at `skills/<tool-name>/SKILL.md`**, with `name` equal to the tool name so `gh skill install <owner>/<repo> <tool-name>` reads naturally.
+4. **Write it from the real CLI**: flags and JSON field names from `--help` and actual output. Cover setup (install, auth scopes), the workflow, how to read results, and the tool's limits. Leave full flag lists to `--help`.
+5. **Keep it public-safe**: generic examples (`acme`, `alice`), no references to the user's personal skills or internal tools. Name a capability ("a dependency-PR triage skill") instead.
+6. **Add an `## Agent skill` README section** (and nav link) with:
+   ```bash
+   gh skill install <owner>/<repo> <tool-name>
+   # or
+   npx skills add <owner>/<repo> --skill <tool-name>
+   ```
+   plus one or two example prompts.
+
+## Step 7: Release Readiness Checklist
 
 Present the final checklist (items vary by project type):
 
@@ -133,6 +158,7 @@ OSS Release Readiness:
 - [ ] .github/CODEOWNERS exists; dependabot.yml has no `reviewers`
 - [ ] README's required language version matches go.mod / engines
 - [ ] Tests pass
+- [ ] Agent skill decision made; if shipped, `skills/<tool>/SKILL.md` matches `--help` and the README has an "Agent skill" section
 - [ ] Version/tag strategy defined (semver); libraries have at least one semver tag
 - [ ] [CLI only] Release automation configured (goreleaser)
 - [ ] [CLI only] Homebrew tap / package registry configured
@@ -140,7 +166,7 @@ OSS Release Readiness:
 
 For each unchecked item, provide the specific fix needed.
 
-## Step 7: Final Actions
+## Step 8: Final Actions
 
 1. If all checks pass, confirm with user before any publishing steps
 2. Commit all changes in a single commit (or logical groups)
@@ -175,7 +201,8 @@ Action:
 7. Run golangci-lint, fix all errors
 8. Copy .github/workflows (test, license, release) from sibling
 9. Copy .goreleaser.yaml from sibling, update binary name
-10. Present checklist, commit, push
+10. Decide on an agent skill; if yes, write `skills/<tool>/SKILL.md` and the README section
+11. Present checklist, commit, push
 ```
 
 **Example 2: Go library**
