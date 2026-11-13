@@ -73,26 +73,20 @@ Repository Scan:
 3. If attribution is required, create or update a NOTICES file
 4. Copy LICENSE from sibling repo, updating year if needed
 
-## Step 3: README Quality Check
+## Step 3: README
 
-Evaluate and improve the README:
+Aim for a polished, "awesome" README, not just a complete one. Read `references/readme-guide.md` and follow its layout. A README with only plain sections and no visuals does not pass this step.
 
-1. **Required sections** (create if missing):
-   - Project name and tagline (concise, memorable)
-   - What it does (1-2 sentences)
-   - Installation instructions (adapt based on project type — `go get` for libraries, `go install`/brew for CLIs)
-   - Quick start / basic usage
-   - License
-
-2. **Recommended sections** (suggest if missing):
-   - Features list
-   - Configuration options
-   - Contributing guidelines (or link to CONTRIBUTING.md)
-
-3. **Quality checks**:
-   - Does the README match the actual CLI/API interface?
-   - Are code examples up to date and runnable?
-   - Is the installation method documented correctly?
+1. **Hero block** (centered `<div align="center">`):
+   - Name, bold one-line promise, one or two lines on how
+   - Badges: test workflow, release, language version, license (only ones that resolve)
+   - **Demo GIF** for CLI/TUI tools, recorded with vhs from a committed `assets/demo.tape` against offline fake data (never real accounts)
+   - Section nav links
+2. **Body**: problem paragraph → Features (bold leads) → Installation (`go install`/brew/`gh extension install` for CLIs, `go get` for libraries) → Quick Start with real output → reference tables (flags, output, config) → Limits → Related → License
+3. **Accuracy checks**:
+   - Every flag and example matches the actual `--help` / API
+   - Example output is copied from a real run (of the demo binary if needed)
+   - The demo GIF was regenerated after the last output change and visually checked
 
 ## Step 4: Code Quality Review
 
@@ -130,7 +124,8 @@ Present the final checklist (items vary by project type):
 OSS Release Readiness:
 - [ ] LICENSE file is correct and complete
 - [ ] All dependency licenses are compatible
-- [ ] README is comprehensive and accurate
+- [ ] README is comprehensive and accurate (hero block, badges, nav, features, limits)
+- [ ] [CLI only] Demo GIF recorded from `assets/demo.tape` with offline fake data
 - [ ] No secrets, internal URLs, or sensitive data in code
 - [ ] .gitignore covers build artifacts, IDE files, OS files
 - [ ] Linter config exists and passes with no errors
@@ -176,7 +171,7 @@ Action:
 3. Scan repo structure, check for sensitive files
 4. Copy LICENSE, .gitignore, .golangci.yml from sibling
 5. Check go.mod dependencies for license compatibility
-6. Ensure README matches `--help` output
+6. Write README per readme-guide; build `assets/demo` fake backend, record `assets/demo.tape` with vhs, check the GIF
 7. Run golangci-lint, fix all errors
 8. Copy .github/workflows (test, license, release) from sibling
 9. Copy .goreleaser.yaml from sibling, update binary name
@@ -219,4 +214,5 @@ Action:
 
 Read the appropriate reference file for templates and conventions before creating config files:
 
+- **README (all projects)**: `references/readme-guide.md` — layout, badges, vhs demo GIF with offline fake data
 - **Go**: `references/go-conventions.md` — .golangci.yml, .gitignore, .github/workflows, .goreleaser.yaml, dependabot, errcheck fixes
